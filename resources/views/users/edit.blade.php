@@ -20,20 +20,23 @@
     <h2 class="text-center">Edit Your Profile</h2>
     <div class="row justify-content-center mt-4">
         <div class="col-md-6 profile-card">
-            <form action="{{ route('user.update', ['id' => $user->id]) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('user.update', ['id' => auth()->user()->id]) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="form-group">
                     <label for="editName">Name</label>
-                    <input type="text" name="name" class="form-control" id="editName" value="{{ $user->name }}" required>
+                    <input type="text" name="name" class="form-control" id="editName" value="{{ auth()->user()->name }}" required>
+                    @error('name')<span class="text-danger">{{ $message }}</span>@enderror
                 </div>
                 <div class="form-group">
                     <label for="editEmail">Email address</label>
-                    <input type="email" name="email" class="form-control" id="editEmail" value="{{ $user->email }}" required>
+                    <input type="email" name="email" class="form-control" id="editEmail" value="{{ auth()->user()->email }}" required>
+                    @error('email')<span>{{ $message }}</span>@enderror
                 </div>
                 <div class="form-group">
                     <label for="editAvatar">Upload New Avatar</label>
                     <input type="file" name="image" class="form-control-file" id="editAvatar">
+                    @error('image')<span class="image">{{ $message }}</span>@enderror
                 </div>
                 <button type="submit" class="btn btn-success btn-block">Save Changes</button>
             </form>

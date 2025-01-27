@@ -13,11 +13,10 @@ class UserController extends Controller
     public function dashboard()
     {
         if (Auth::check()) {
-            $user = User::findOrFail(auth()->user()->id);
-            return view('dashboard', compact('user'));
+            return view('dashboard');
+        } else {
+            return redirect()->route('loginPage');
         }
-
-        return redirect()->route('login')->with('error', 'Please log in to access the dashboard.');
     }
     public function loginPage()
     {
@@ -36,13 +35,14 @@ class UserController extends Controller
         $user->email = $request->input("email");
         $user->password = $request->input("password");
         if ($request->hasFile('image')) {
-            $file = $request->file('image'); // Получаем файл из запроса
-            $fileName = time() . '.' . $file->getClientOriginalExtension(); // Создаем уникальное имя файла
-            $file->storeAs('images', $fileName, 'public'); // Сохраняем файл в папку 'public/storage/images'
-            $user->image = $fileName; // Сохраняем имя файла в базе данных
+            $file = $request->file('image');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('images', $fileName, 'public');
+            $user->image = $fileName;
         }
         $user->save();
-        return redirect()->route('loginPage');
+        Auth::login($user);
+        return redirect()->route('dashboard');
     }
 
     public function login(Request $request)
@@ -69,8 +69,7 @@ class UserController extends Controller
     public function editPage()
     {
         if (Auth::check()) {
-            $user = User::findOrFail(auth()->user()->id);
-            return view('users.edit', compact('user'));
+            return view('users.edit');
         }
     }
 
