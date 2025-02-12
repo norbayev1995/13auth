@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,11 +13,7 @@ class UserController extends Controller
 {
     public function dashboard()
     {
-        if (Auth::check()) {
-            return view('dashboard');
-        } else {
-            return redirect()->route('loginPage');
-        }
+        return Auth::check() ? view('dashboard') : redirect()->route('loginPage');
     }
     public function loginPage()
     {
@@ -29,7 +25,7 @@ class UserController extends Controller
         return view('auth.register');
     }
 
-    public function register(StoreUserRequest $request)
+    public function register(RegisterRequest $request)
     {
         $user = new User();
         $user->name = $request->input("name");
@@ -66,9 +62,7 @@ class UserController extends Controller
     }
     public function editPage()
     {
-        if (Auth::check()) {
-            return view('users.edit');
-        }
+        return Auth::check() ? view('users.edit') : redirect()->route('loginPage');
     }
 
     public function update(UpdateUserRequest $request, $id)
